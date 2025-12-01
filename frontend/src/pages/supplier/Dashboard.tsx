@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { apiGet } from '../../services/api';
@@ -71,30 +71,32 @@ export default function Dashboard() {
       setLoading(true);
       setError(null);
 
-      // Fetch supplier profile
-      const profileRes = await apiGet<SupplierProfile>('/suppliers/me/profile');
-      if (profileRes.success && profileRes.data) {
-        setProfile(profileRes.data);
-        // Fetch stats
-        const statsRes = await apiGet<Stats>(`/suppliers/${profileRes.data.id}/stats`);
-        if (statsRes.success && statsRes.data) {
-          setStats(statsRes.data);
-        }
-      }
+     // Fetch supplier profile
+const profileRes = await apiGet<SupplierProfile>('/suppliers/me/profile');
+if (profileRes) {
+  setProfile(profileRes);
+  // Fetch stats
+  const statsRes = await apiGet<{ data: Stats }>(`/suppliers/${profileRes.id}/stats`);
+  if (statsRes) {
+    setStats(statsRes.data);
+  }
+}
 
-      // Fetch products
-      const productsRes = await apiGet<Product[]>('/products/me/products?limit=5');
-      if (productsRes.success && productsRes.data) {
-        setProducts(productsRes.data);
-      }
+// Fetch products
+const productsRes = await apiGet<{ data: Product[] } | Product[]>('/products/me/products?limit=5');
+if (productsRes) {
+  const productsData = Array.isArray(productsRes) ? productsRes : productsRes.data;
+  setProducts(productsData || []);
+}
 
-      // Fetch negotiations
-      const negotiationsRes = await apiGet<Negotiation[]>('/negotiations?limit=5');
-      if (negotiationsRes.success && negotiationsRes.data) {
-        setNegotiations(negotiationsRes.data);
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to load dashboard data');
+// Fetch negotiations
+const negotiationsRes = await apiGet<{ data: Negotiation[] } | Negotiation[]>('/negotiations?limit=5');
+if (negotiationsRes) {
+  const negotiationsData = Array.isArray(negotiationsRes) ? negotiationsRes : negotiationsRes.data;
+  setNegotiations(negotiationsData || []);
+}
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Không thể tải dữ liệu dashboard');
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,5 @@
 // Placeholder pages - these would be fully implemented in a complete application
 
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, ArrowRight } from 'lucide-react';
 import { Button, Card, CardBody } from '../components/ui';
