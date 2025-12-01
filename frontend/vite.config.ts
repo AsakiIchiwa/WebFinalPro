@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   server: {
+    allowedHosts: ["webfinalfront-m5s7.onrender.com"],
     port: 3000,
     proxy: {
       '/api': {
